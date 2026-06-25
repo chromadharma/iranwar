@@ -1,0 +1,1085 @@
+/* ══════════════════════════════════════════════════════════════════
+   IRAN WAR 2026: A GEOECONOMIC AUTOPSY
+   styles.css — Dark Viridis Theme
+   Stepwell Centre for Asian Futures · Ahmedabad University
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─── CSS CUSTOM PROPERTIES ─── */
+:root {
+  /* Viridis palette — baseline (dark purple) → peak crisis (yellow) */
+  --v0: #440154;
+  --v1: #482878;
+  --v2: #3e4989;
+  --v3: #31688e;
+  --v4: #26828e;
+  --v5: #1f9e89;
+  --v6: #35b779;
+  --v7: #6ece58;
+  --v8: #b5de2b;
+  --v9: #fde725;
+
+  /* Dark theme surfaces */
+  --bg-base:      #0a0a0a;
+  --bg-surface:   #111111;
+  --bg-card:      #161616;
+  --bg-elevated:  #1c1c1c;
+  --border:       #2a2a2a;
+  --border-light: #1e1e1e;
+
+  /* Text */
+  --text-primary:   #f0f0f0;
+  --text-secondary: #888888;
+  --text-muted:     #444444;
+  --text-accent:    var(--v5);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'Space Mono', 'Courier New', monospace;
+
+  /* Layout */
+  --max-width:    1200px;
+  --section-pad:  80px 24px;
+  --card-radius:  6px;
+
+  /* Phase colors (Viridis mapped) */
+  --phase-outbreak:   var(--v1);
+  --phase-closure:    var(--v2);
+  --phase-escalation: var(--v3);
+  --phase-peak:       var(--v9);
+  --phase-stalemate:  var(--v4);
+  --phase-ceasefire1: var(--v5);
+  --phase-collapse:   var(--v8);
+  --phase-blockade:   var(--v7);
+  --phase-relapse:    var(--v8);
+  --phase-resolution: var(--v6);
+  --phase-recovery:   var(--v5);
+}
+
+/* ─── RESET & BASE ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+a { color: var(--v5); text-decoration: none; }
+a:hover { color: var(--v7); }
+
+/* ─── PROGRESS BAR ─── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--v0), var(--v3), var(--v5), var(--v7), var(--v9));
+  z-index: 1000;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.1s linear;
+}
+
+/* ─── NAVIGATION ─── */
+#main-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 900;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-logo-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.nav-logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+
+.nav-logo-primary {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--v5);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.nav-logo-secondary {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.nav-project-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-phase-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+
+/* ─── HERO SECTION ─── */
+#hero {
+  background: #000;
+  padding: 140px 24px 80px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--v5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 7vw, 80px);
+  font-weight: 700;
+  line-height: 1.0;
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(15px, 2vw, 18px);
+  color: #888;
+  max-width: 600px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 32px;
+  max-width: 800px;
+}
+
+.hero-stat-number {
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+}
+
+.hero-viridis-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--v0), var(--v2), var(--v4), var(--v6), var(--v8), var(--v9));
+}
+
+/* ─── PHASE LEGEND ─── */
+#phase-legend {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.phase-legend-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.phase-pill .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* ─── SECTION WRAPPER ─── */
+.section-wrapper {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--section-pad);
+}
+
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* ─── SCROLLYTELLING LAYOUT ─── */
+#scrollytelling {
+  background: var(--bg-base);
+  border-top: 1px solid var(--border);
+}
+
+.scroll-outer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.scroll-section {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  align-items: start;
+  position: relative;
+}
+
+/* Sticky map panel */
+.sticky-figure {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 56px; /* Below nav */
+  height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+#scroll-map-container {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+/* Active step info overlay at bottom of map */
+.map-step-overlay {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  background: rgba(10,10,10,0.9);
+  border-top: 1px solid var(--border);
+  min-height: 72px;
+}
+
+.map-step-date {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--v5);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.map-step-headline {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.map-metrics {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.map-metric {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.map-metric span {
+  color: var(--v9);
+  font-weight: 700;
+}
+
+/* Scrolling steps panel */
+.scroll-steps {
+  padding: 80px 32px 80px 40px;
+}
+
+/* First spacer so map is visible before steps */
+.scroll-steps::before {
+  content: '';
+  display: block;
+  height: 15vh;
+}
+
+.scroll-step {
+  min-height: 75vh;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0.25;
+  transform: translateX(0);
+  transition: opacity 0.5s ease, transform 0.4s ease;
+  border-left: 2px solid transparent;
+  padding-left: 20px;
+  margin-left: -20px;
+}
+
+.scroll-step.is-active {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.step-phase-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.step-headline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.step-narrative {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: #aaa;
+  line-height: 1.75;
+  max-width: 420px;
+}
+
+.step-metrics {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.step-metric-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.step-metric-chip strong { color: var(--v9); }
+
+.step-source {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+/* ─── CHART SECTIONS ─── */
+.chart-section-bg {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.chart-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-card-title .icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.chart-source {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.chart-source a {
+  color: var(--v4);
+  text-decoration: underline;
+}
+
+.chart-desc {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Two-column chart grid */
+.chart-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Full-width chart wrapper */
+.chart-full { width: 100%; position: relative; }
+.chart-full canvas { width: 100% !important; }
+
+/* ─── SANDBOX SECTION ─── */
+#sandbox {
+  background: var(--bg-base);
+  border-top: 1px solid var(--border);
+}
+
+.slider-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.slider-date-label {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hormuz-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hormuz-badge.closed   { background: var(--v9); color: #000; }
+.hormuz-badge.open     { background: var(--v5); color: #000; }
+.hormuz-badge.blockaded{ background: var(--v2); color: #fff; }
+
+/* Range slider */
+input[type="range"].crisis-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--v0), var(--v2), var(--v4), var(--v7), var(--v9));
+}
+
+input[type="range"].crisis-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #111;
+  box-shadow: 0 0 0 2px var(--v5);
+  cursor: pointer;
+}
+
+input[type="range"].crisis-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #111;
+  box-shadow: 0 0 0 2px var(--v5);
+  cursor: pointer;
+}
+
+.slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+/* Stat cards grid */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: var(--card-radius);
+  padding: 14px 16px;
+  overflow: hidden;
+}
+
+.stat-card-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+/* Sandbox split */
+.sandbox-split {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 16px;
+  align-items: start;
+}
+
+#sandbox-map-container {
+  height: 420px;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.sandbox-event-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 16px;
+  margin-top: 12px;
+  min-height: 100px;
+}
+
+.sandbox-event-headline {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.sandbox-event-body {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* ─── SANKEY SECTION ─── */
+.sankey-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sankey-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 6px 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.sankey-btn.active {
+  background: var(--v5);
+  color: #000;
+  border-color: var(--v5);
+}
+
+.sankey-btn.crisis.active {
+  background: var(--v9);
+  color: #000;
+  border-color: var(--v9);
+}
+
+#sankey-india-svg, #sankey-global-svg {
+  width: 100%;
+  overflow: visible;
+}
+
+/* ─── GEOPOLITICAL TABLE ─── */
+.geo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.geo-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.geo-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.geo-table tr:hover td { background: var(--bg-elevated); }
+
+.geo-table .country-cell {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.geo-table .role-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.net-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.net-catastrophic { background: #2d0a0a; color: #ff6b6b; border: 1px solid #5a1010; }
+.net-severe       { background: #2a1500; color: #ff9f43; border: 1px solid #5a3000; }
+.net-mixed        { background: #1a1a00; color: var(--v8); border: 1px solid #3a3a00; }
+.net-gain         { background: #0a2a0a; color: var(--v6); border: 1px solid #1a5a1a; }
+.net-exposure     { background: #0a1530; color: #74b9ff; border: 1px solid #1a3560; }
+.net-moderate     { background: #1a1a2a; color: #a29bfe; border: 1px solid #2a2a4a; }
+
+/* ─── FOOTER ─── */
+#resolution-footer {
+  background: #000;
+  border-top: 4px solid;
+  border-image: linear-gradient(to right, var(--v0), var(--v3), var(--v5), var(--v7), var(--v9)) 1;
+  padding: 64px 24px 48px;
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.footer-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--v5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.footer-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.footer-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.footer-stat {
+  border-left: 3px solid;
+  padding-left: 16px;
+}
+
+.footer-stat-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.footer-stat-delta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.footer-stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.footer-credits {
+  border-top: 1px solid #1a1a1a;
+  padding-top: 24px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #444;
+  line-height: 1.8;
+}
+
+.footer-credits a { color: #555; }
+.footer-credits a:hover { color: var(--v5); }
+
+/* ─── LEAFLET OVERRIDES ─── */
+.leaflet-container {
+  background: #0a0a0a !important;
+  font-family: var(--font-display) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #161616 !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 4px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.8) !important;
+  color: #f0f0f0 !important;
+}
+
+.leaflet-popup-tip { background: #161616 !important; }
+
+.leaflet-popup-content {
+  margin: 14px 16px !important;
+  font-family: var(--font-display) !important;
+  min-width: 220px !important;
+  max-width: 280px !important;
+}
+
+.map-popup-date {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.map-popup-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #f0f0f0;
+  margin-bottom: 7px;
+  line-height: 1.3;
+}
+
+.map-popup-body {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.map-popup-source {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #444;
+}
+
+.leaflet-control-zoom a {
+  background: #161616 !important;
+  color: #f0f0f0 !important;
+  border-color: #2a2a2a !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(0,0,0,0.6) !important;
+  color: #444 !important;
+  font-size: 9px !important;
+}
+
+/* Pulse animation for active marker */
+@keyframes markerPulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.6); opacity: 0.4; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.active-marker-pulse {
+  animation: markerPulse 1.2s ease-in-out infinite;
+}
+
+/* ─── CHART.JS CANVAS CONTAINERS ─── */
+.canvas-wrap { position: relative; width: 100%; }
+.canvas-wrap canvas { display: block !important; }
+
+/* ─── SANKEY SVG STYLES ─── */
+.sankey-node rect {
+  rx: 2px;
+}
+
+.sankey-link {
+  fill: none;
+  stroke-opacity: 0.25;
+  transition: stroke-opacity 0.2s;
+}
+
+.sankey-link:hover { stroke-opacity: 0.55; }
+
+.sankey-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: #aaa;
+  pointer-events: none;
+}
+
+.sankey-col-header {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  fill: #555;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sankey-blocked-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  fill: var(--v9);
+  letter-spacing: 0.5px;
+}
+
+/* ─── LOADING STATE ─── */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .scroll-section {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky-figure {
+    position: relative;
+    top: 0;
+    height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scroll-steps { padding: 32px 20px; }
+  .scroll-step  { min-height: 50vh; }
+
+  .chart-grid-2 { grid-template-columns: 1fr; }
+  .stat-cards   { grid-template-columns: repeat(2, 1fr); }
+  .sandbox-split { grid-template-columns: 1fr; }
+  #sandbox-map-container { height: 300px; }
+}
+
+@media (max-width: 600px) {
+  :root { --section-pad: 48px 16px; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+  .footer-stats { grid-template-columns: 1fr 1fr; }
+  .nav-phase-pill { display: none; }
+  .geo-table { font-size: 11px; }
+  .geo-table th, .geo-table td { padding: 8px; }
+}
+
+/* ─── CSS SCROLL-DRIVEN REVEAL (Chrome 115+, Safari 26+) ─── */
+@supports (animation-timeline: view()) {
+  .reveal-on-scroll {
+    animation: revealUp linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Fallback for unsupported browsers — always visible */
+@supports not (animation-timeline: view()) {
+  .reveal-on-scroll { opacity: 1; transform: none; }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .scroll-step { opacity: 1 !important; transform: none !important; }
+}
