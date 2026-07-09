@@ -5,16 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The 2026 Iran War: A Geoeconomic Autopsy · Stepwell Centre</title>
   <meta name="description" content="112 days of conflict, a closed Strait of Hormuz, and 22,500 stranded mariners — a data journalism autopsy of the 2026 Iran War's geoeconomic consequences." />
+  <link rel="canonical" href="https://fritzhand.github.io/iranwar/" />
+
+  <!-- Favicons (stepwell mark) -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#A61B1B" />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Stepwell Centre for Asian Futures · Ahmedabad University" />
   <meta property="og:title" content="The 2026 Iran War: A Geoeconomic Autopsy" />
-  <meta property="og:description" content="Stepwell Centre for Asian Futures · Ahmedabad University" />
+  <meta property="og:description" content="112 days of conflict, a closed Strait of Hormuz, and 22,500 stranded mariners — a data-journalism autopsy of the 2026 Iran War's geoeconomic consequences." />
   <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://fritzhand.github.io/iranwar/" />
+  <meta property="og:image" content="https://fritzhand.github.io/iranwar/assets/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The 2026 Iran War: A Geoeconomic Autopsy — Stepwell Centre for Asian Futures, Ahmedabad University" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The 2026 Iran War: A Geoeconomic Autopsy" />
+  <meta name="twitter:description" content="112 days of conflict, a closed Strait of Hormuz, and 22,500 stranded mariners — a geoeconomic autopsy." />
+  <meta name="twitter:image" content="https://fritzhand.github.io/iranwar/assets/og-image.png" />
+  <meta name="twitter:image:alt" content="The 2026 Iran War: A Geoeconomic Autopsy — Stepwell Centre for Asian Futures" />
+
+  <!-- Set theme before paint to avoid a flash. Light is the default "document
+       of record" view; dark is opt-in via the toggle and remembered thereafter
+       (we intentionally do NOT follow the OS prefers-color-scheme). -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('iw-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <!-- Project styles -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -26,21 +61,15 @@
   <!-- ── NAVIGATION ── -->
   <nav id="main-nav">
     <a class="nav-logo" href="https://ahduni.edu.in/academics/schools-centres/stepwell-centre-for-asian-futures/" target="_blank" rel="noopener" title="Stepwell Centre for Asian Futures">
-      <svg class="nav-logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4"  y="26" width="24" height="3" rx="1" fill="#1f9e89"/>
-        <rect x="7"  y="21" width="18" height="3" rx="1" fill="#26828e"/>
-        <rect x="10" y="16" width="12" height="3" rx="1" fill="#31688e"/>
-        <rect x="13" y="11" width="6"  height="3" rx="1" fill="#3e4989"/>
-        <rect x="14" y="6"  width="4"  height="3" rx="1" fill="#482878"/>
-      </svg>
-      <div class="nav-logo-text">
-        <span class="nav-logo-primary">Stepwell Centre</span>
-        <span class="nav-logo-secondary">for Asian Futures · Ahmedabad University</span>
-      </div>
+      <img class="nav-logo-lockup" src="assets/au-stepwell-logo.webp" alt="Ahmedabad University · Stepwell Centre for Asian Futures" width="1400" height="435" />
     </a>
     <div class="nav-divider"></div>
     <span class="nav-project-title">The 2026 Iran War: A Geoeconomic Autopsy</span>
-    <div class="nav-right" id="nav-phase-indicator"></div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <span class="toggle-icon" aria-hidden="true"></span><span class="toggle-label">Night</span>
+      </button>
+    </div>
   </nav>
 
   <!-- ══════════════════════════════════════════
@@ -48,37 +77,79 @@
   ══════════════════════════════════════════ -->
   <section id="hero">
     <div class="hero-inner">
-      <p class="hero-eyebrow">Geoeconomic Autopsy &nbsp;·&nbsp; 28 Feb – 20 Jun 2026</p>
-      <h1 class="hero-title">The 2026<br>Iran War</h1>
+      <p class="hero-eyebrow">
+        <span class="eyebrow-primary">Geoeconomic Autopsy</span>
+        <span class="eyebrow-secondary">Stepwell Centre for Asian Futures</span>
+      </p>
+      <h1 class="hero-title">The 2026 Iran War</h1>
       <p class="hero-subtitle">How 112 days of conflict, a closed Strait of Hormuz, and 22,500 stranded mariners rewrote global energy markets — and what it meant for India.</p>
+      <div class="hero-byline">
+        <img class="author-avatar" src="assets/sahasrik.jpg" alt="Sahasrik Ragani" width="50" height="50" loading="lazy" onerror="this.classList.add('is-missing')" />
+        <span class="byline-meta">
+          <span class="byline-name-line">By <span class="hero-byline-name">Sahasrik Ragani</span></span>
+          <span class="byline-dateline">Ahmedabad University &nbsp;·&nbsp; 28 Feb – 20 Jun 2026</span>
+        </span>
+        <span class="byline-socials">
+          <a class="byline-social" href="https://www.linkedin.com/in/rudraveeraragani/" target="_blank" rel="noopener" title="Sahasrik Ragani on LinkedIn" aria-label="Sahasrik Ragani on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </span>
+      </div>
       <div class="hero-stats">
         <div>
-          <div class="hero-stat-number" style="color:#fde725">$166.96</div>
+          <div class="hero-stat-number hero-stat-peak">$166.96</div>
           <div class="hero-stat-label">/bbl &nbsp;·&nbsp; Oman Crude Peak<br>All-time high — Mar 19, 2026</div>
         </div>
         <div>
-          <div class="hero-stat-number" style="color:#b5de2b">22,500</div>
+          <div class="hero-stat-number">22,500</div>
           <div class="hero-stat-label">mariners stranded at peak<br>May 6, 2026 (US CENTCOM)</div>
         </div>
         <div>
-          <div class="hero-stat-number" style="color:#6ece58">$20B</div>
+          <div class="hero-stat-number">$20B</div>
           <div class="hero-stat-label">sold by RBI in single week<br>March 7–14 intervention</div>
-        </div>
-        <div>
-          <div class="hero-stat-number" style="color:#1f9e89">~100</div>
-          <div class="hero-stat-label">Hormuz dark days<br>of 112-day conflict</div>
         </div>
       </div>
     </div>
     <div class="hero-viridis-bar"></div>
   </section>
 
-  <!-- ── PHASE LEGEND ── -->
-  <div id="phase-legend">
+  <!-- ══════════════════════════════════════════
+       ARTICLE LEDE
+  ══════════════════════════════════════════ -->
+  <section id="lede">
+    <div class="lede-inner">
+      <p class="lede-standfirst">For roughly one hundred of the conflict’s one hundred and twelve days, the single most important artery in the global oil trade went dark. This is an accounting of what that cost — in barrels, in rupees, and in people.</p>
+      <p class="lede-body">On 2 March 2026, the Islamic Revolutionary Guard Corps declared the Strait of Hormuz closed to commercial traffic. Within days the Oman/Dubai marker — the benchmark that prices crude already moving east of the blockade — detached from every other grade in the world, printing an all-time high of $166.96 a barrel on 19 March. The Reserve Bank of India sold roughly $20&nbsp;billion in a single week to defend the rupee. It was not enough.</p>
+      <blockquote class="pull-quote">
+        <p>Every $10 a barrel, sustained, widens India’s current-account deficit by about fifty basis points.</p>
+        <cite>Morgan Stanley India &nbsp;·&nbsp; Oil Sensitivity Model</cite>
+      </blockquote>
+      <p class="lede-body">What follows is the record: the market data, the shipping data, and the macroeconomic data — each tied to a dated institutional source. No interpretation is offered where the numbers speak plainly.</p>
+
+      <nav class="quick-links" aria-label="Jump to section">
+        <span class="quick-links-label">On this page</span>
+        <div class="quick-links-row">
+          <a class="quick-link-pill" href="#scrollytelling">Conflict Timeline</a>
+          <a class="quick-link-pill" href="#energy-markets">Crude Benchmark &amp; Transport Flow</a>
+          <a class="quick-link-pill" href="#crude-routes">Crude Routes &amp; Cargo Flows</a>
+          <a class="quick-link-pill" href="#sandbox">Key Metrics</a>
+          <a class="quick-link-pill" href="#india-exposure">India Exposure</a>
+          <a class="quick-link-pill" href="#em-exposure">Emerging Market Exposure</a>
+          <a class="quick-link-pill" href="#remittances">Remittances</a>
+          <a class="quick-link-pill" href="#geopolitical-cost">Geopolitical Cost</a>
+          <a class="quick-link-pill" href="#resolution-footer">Resolution</a>
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ── PHASE LEGEND (sticky nav once scrolled past) ── -->
+  <div id="phase-legend-sentinel" aria-hidden="true"></div>
+  <nav id="phase-legend" aria-label="Conflict phases">
     <div class="phase-legend-inner" id="phase-pills-container">
       <!-- Injected by app.js -->
     </div>
-  </div>
+  </nav>
 
   <!-- ══════════════════════════════════════════
        SECTION 1: SCROLLYTELLING MAP
@@ -99,8 +170,8 @@
             <div class="map-step-date" id="map-overlay-date">Feb 28, 2026 · OUTBREAK</div>
             <div class="map-step-headline" id="map-overlay-headline">Scroll to begin the timeline →</div>
             <div class="map-metrics">
-              <div class="map-metric">🛢 Brent: <span id="map-overlay-brent">$74.2</span></div>
-              <div class="map-metric">🛢 Oman: <span id="map-overlay-oman">$73.8</span></div>
+              <div class="map-metric"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>Brent: <span id="map-overlay-brent">$74.2</span></div>
+              <div class="map-metric"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>Oman: <span id="map-overlay-oman">$73.8</span></div>
             </div>
           </div>
         </div>
@@ -116,14 +187,14 @@
   <!-- ══════════════════════════════════════════
        SECTION 2: ENERGY MARKETS
   ══════════════════════════════════════════ -->
-  <section class="chart-section-bg">
+  <section id="energy-markets" class="chart-section-bg">
     <div class="section-wrapper">
       <p class="section-eyebrow">Energy Markets</p>
       <h2 class="section-title">Crude Benchmarks &amp; Hormuz Transit Flow</h2>
 
       <div class="chart-card reveal-on-scroll">
         <div class="chart-card-title">
-          <span class="icon" style="background:#fde725"></span>
+          <span class="icon" style="background:#A61B1B"></span>
           Crude Benchmark Divergence — Brent · WTI · Oman/DME (USD/bbl)
         </div>
         <p class="chart-desc">Oman/Dubai Mercantile Exchange (DME) — the key Asian benchmark — diverged sharply from WTI as Hormuz closure created a physical scarcity premium for barrels already east of the blockade. Oman peaked at $166.96 on March 19 on a Chinese panic bid. WTI peaked at $96.84 on March 8.</p>
@@ -133,10 +204,10 @@
 
       <div class="chart-card reveal-on-scroll">
         <div class="chart-card-title">
-          <span class="icon" style="background:#26828e"></span>
+          <span class="icon" style="background:#326891"></span>
           Strait of Hormuz — Daily Tanker Transits (Feb 28 – Mar 24, 2026)
         </div>
-        <p class="chart-desc">Pre-conflict baseline: ~94 ships/day (IMF PortWatch AIS data) · ~100/day (EIA/Lloyd's List). Following IRGC closure March 2, Clarksons Research confirmed average of just 4 transits/day through week ending March 23. Indian LPG carriers briefly permitted March 13 (S&P Global). Color: <span style="color:#1f9e89">■</span> Unrestricted &nbsp;<span style="color:#6ece58">■</span> Permitted &nbsp;<span style="color:#fde725">■</span> Restricted &nbsp;<span style="color:#440154">■</span> Near-zero</p>
+        <p class="chart-desc">Pre-conflict baseline: ~94 ships/day (IMF PortWatch AIS data) · ~100/day (EIA/Lloyd's List). Following IRGC closure March 2, Clarksons Research confirmed average of just 4 transits/day through week ending March 23. Indian LPG carriers briefly permitted March 13 (S&P Global). Color: <span style="color:var(--teal)">■</span> Unrestricted &nbsp;<span style="color:var(--teal)">■</span> Permitted &nbsp;<span style="color:var(--crisis)">■</span> Restricted &nbsp;<span style="color:var(--ink)">■</span> Near-zero</p>
         <div class="canvas-wrap" style="height:260px"><canvas id="chart-hormuz-bar"></canvas></div>
         <p class="chart-source">Sources: <a href="https://www.vortexa.com/" target="_blank">Vortexa</a> · <a href="https://www.spglobal.com/commodityinsights/en/" target="_blank">S&P Global</a> · <a href="https://windward.ai/" target="_blank">Windward Maritime AI</a> · <a href="https://www.argusmedia.com/en/news-and-insights/latest-market-news/2804704-at-least-three-vessels-exit-strait-of-hormuz" target="_blank">Argus Media (Mar 22)</a> · <a href="https://www.bloomberg.com/news/articles/2026-03-24/chinese-owned-tanker-transits-hormuz-along-iranian-coastal-route" target="_blank">Bloomberg (Mar 24)</a> · <a href="https://portwatch.imf.org/pages/chokepoint6" target="_blank">IMF PortWatch</a> · <a href="https://www.ukmto.org/" target="_blank">UKMTO</a> · <a href="https://www.clarksons.com/services/research/" target="_blank">Clarksons Research (avg 4/day week to Mar 23)</a></p>
       </div>
@@ -146,7 +217,7 @@
   <!-- ══════════════════════════════════════════
        SECTION 3: INDIA IMPORT STRUCTURE (SANKEYS)
   ══════════════════════════════════════════ -->
-  <section>
+  <section id="crude-routes">
     <div class="section-wrapper">
       <p class="section-eyebrow">India's Energy Exposure</p>
       <h2 class="section-title">Crude Import Routes &amp; Global Cargo Flows</h2>
@@ -180,13 +251,13 @@
   ══════════════════════════════════════════ -->
   <section id="sandbox" class="chart-section-bg">
     <div class="section-wrapper">
-      <p class="section-eyebrow">Phase 02 / Interactive Sandbox</p>
-      <h2 class="section-title">Scrub the Crisis Timeline</h2>
+      <p class="section-eyebrow">Phase 02 / Interactive Timeline</p>
+      <h2 class="section-title">The Conflict Matrix</h2>
       <p class="section-subtitle">Drag the slider to see how every key metric evolved from Feb 28 to Jun 20. The map updates to show the operational status of the Strait.</p>
 
       <div class="slider-wrapper">
         <div class="slider-header">
-          <span class="slider-date-label" id="slider-date-label">📅 Feb 28 &nbsp;·&nbsp; Day 0</span>
+          <span class="slider-date-label" id="slider-date-label"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span id="slider-date-text">Feb 28 &nbsp;·&nbsp; Day 0</span></span>
           <span class="hormuz-badge open" id="hormuz-badge">HORMUZ: OPEN</span>
         </div>
         <input type="range" class="crisis-slider" id="crisis-slider" min="0" max="112" value="0" step="1" aria-label="Crisis timeline day" />
@@ -196,28 +267,28 @@
       </div>
 
       <div class="stat-cards">
-        <div class="stat-card" style="border-left-color:#6ece58">
-          <div class="stat-card-value" id="stat-brent" style="color:#6ece58">$74.2</div>
+        <div class="stat-card" style="border-left-color:var(--teal)">
+          <div class="stat-card-value" id="stat-brent" style="color:var(--teal)">$74.2</div>
           <div class="stat-card-label">/bbl &nbsp;·&nbsp; Brent Crude</div>
         </div>
-        <div class="stat-card" style="border-left-color:#fde725">
-          <div class="stat-card-value" id="stat-oman" style="color:#fde725">$73.8</div>
+        <div class="stat-card" style="border-left-color:var(--crisis)">
+          <div class="stat-card-value" id="stat-oman" style="color:var(--crisis)">$73.8</div>
           <div class="stat-card-label">/bbl &nbsp;·&nbsp; Oman/GME Crude</div>
         </div>
-        <div class="stat-card" style="border-left-color:#1f9e89">
-          <div class="stat-card-value" id="stat-wti" style="color:#1f9e89">$70.1</div>
+        <div class="stat-card" style="border-left-color:var(--teal)">
+          <div class="stat-card-value" id="stat-wti" style="color:var(--teal)">$70.1</div>
           <div class="stat-card-label">/bbl &nbsp;·&nbsp; WTI Crude</div>
         </div>
-        <div class="stat-card" style="border-left-color:#3e4989">
-          <div class="stat-card-value" id="stat-fx" style="color:#3e4989">$730.0B</div>
+        <div class="stat-card" style="border-left-color:var(--ink)">
+          <div class="stat-card-value" id="stat-fx" style="color:var(--ink)">$730.0B</div>
           <div class="stat-card-label">India FX Reserves (USD)</div>
         </div>
-        <div class="stat-card" style="border-left-color:#31688e">
-          <div class="stat-card-value" id="stat-ships" style="color:#31688e">0</div>
+        <div class="stat-card" style="border-left-color:var(--link)">
+          <div class="stat-card-value" id="stat-ships" style="color:var(--link)">0</div>
           <div class="stat-card-label">vessels &nbsp;·&nbsp; Ships Stranded</div>
         </div>
-        <div class="stat-card" style="border-left-color:#b5de2b">
-          <div class="stat-card-value" id="stat-mariners" style="color:#b5de2b">0</div>
+        <div class="stat-card" style="border-left-color:var(--crisis)">
+          <div class="stat-card-value" id="stat-mariners" style="color:var(--crisis)">0</div>
           <div class="stat-card-label">stranded &nbsp;·&nbsp; Mariners</div>
         </div>
       </div>
@@ -247,7 +318,7 @@
   <!-- ══════════════════════════════════════════
        SECTION 5: INDIA MACRO EXPOSURE
   ══════════════════════════════════════════ -->
-  <section>
+  <section id="india-exposure">
     <div class="section-wrapper">
       <p class="section-eyebrow">India Macroeconomic Exposure</p>
       <h2 class="section-title">Reserves, Rates &amp; Fiscal Stress</h2>
@@ -261,7 +332,7 @@
         </div>
         <div class="chart-card reveal-on-scroll">
           <div class="chart-card-title">USD/INR Exchange Rate — RBI Reference Rate (₹ per $1)</div>
-          <p class="chart-desc">RBI reference rate published daily at 12:00 IST. Conflict-period peak: <strong style="color:#b5de2b">₹96.844/$1 on May 20, 2026</strong> (confirmed via CEIC/RBI Reference Rate Archive). Jun 22 close: ₹94.494; Jun 23: ₹94.706. Note: earlier figure of ₹93.33 (Mar 19) was not the peak — the rupee continued depreciating through May.</p>
+          <p class="chart-desc">RBI reference rate published daily at 12:00 IST. Conflict-period peak: <strong style="color:var(--crisis)">₹96.844/$1 on May 20, 2026</strong> (confirmed via CEIC/RBI Reference Rate Archive). Jun 22 close: ₹94.494; Jun 23: ₹94.706. Note: earlier figure of ₹93.33 (Mar 19) was not the peak — the rupee continued depreciating through May.</p>
           <div class="canvas-wrap" style="height:240px"><canvas id="chart-fx-rate"></canvas></div>
           <p class="chart-source"><a href="https://www.rbi.org.in/scripts/WSSViewDetail.aspx" target="_blank">RBI Reference Rate</a> · <a href="https://www.mufg.jp/english/" target="_blank">MUFG FX Research (Mar 12)</a> · Goldman Sachs India</p>
         </div>
@@ -274,7 +345,7 @@
         </div>
         <div class="chart-card reveal-on-scroll">
           <div class="chart-card-title">Lloyd's War Risk Premium — % of Vessel Value Per Voyage</div>
-          <p class="chart-desc">Unit: AWRP (Additional War Risk Premium) as % of Hull &amp; Machinery value per 7-day transit. Pre-conflict baseline: 0.10–0.15%. <strong style="color:#b5de2b">Confirmed peak: 2.5% in early March</strong> (insurance executives, Asia Pacific Maritime conference, Singapore, March 27 — S&P Global). For a $138M H&M VLCC this adds $10–14M per voyage. Red Sea precedent: 26+ months and still elevated (Drewry).</p>
+          <p class="chart-desc">Unit: AWRP (Additional War Risk Premium) as % of Hull &amp; Machinery value per 7-day transit. Pre-conflict baseline: 0.10–0.15%. <strong style="color:var(--crisis)">Confirmed peak: 2.5% in early March</strong> (insurance executives, Asia Pacific Maritime conference, Singapore, March 27 — S&P Global). For a $138M H&M VLCC this adds $10–14M per voyage. Red Sea precedent: 26+ months and still elevated (Drewry).</p>
           <div class="canvas-wrap" style="height:260px"><canvas id="chart-war-risk"></canvas></div>
           <p class="chart-source"><a href="https://www.lloydslist.com/ll/sector/tankers/article803421.ece" target="_blank">Lloyd's Joint War Committee</a> · P&I Clubs · Drewry Shipping Consultants</p>
         </div>
@@ -292,7 +363,7 @@
   <!-- ══════════════════════════════════════════
        SECTION 6: EMERGING MARKET VULNERABILITY
   ══════════════════════════════════════════ -->
-  <section class="chart-section-bg">
+  <section id="em-exposure" class="chart-section-bg">
     <div class="section-wrapper">
       <p class="section-eyebrow">Emerging Market Debt Vulnerability</p>
       <h2 class="section-title">Current Account Deficit Widening &amp; EMBI Spread Shock</h2>
@@ -317,7 +388,7 @@
   <!-- ══════════════════════════════════════════
        SECTION 7: REMITTANCES
   ══════════════════════════════════════════ -->
-  <section>
+  <section id="remittances">
     <div class="section-wrapper">
       <p class="section-eyebrow">India–Gulf Remittances</p>
       <h2 class="section-title">Sub-National Exposure &amp; Long-Run Trend</h2>
@@ -343,7 +414,7 @@
   <!-- ══════════════════════════════════════════
        SECTION 8: GEOPOLITICAL COST MATRIX
   ══════════════════════════════════════════ -->
-  <section class="chart-section-bg">
+  <section id="geopolitical-cost" class="chart-section-bg">
     <div class="section-wrapper">
       <p class="section-eyebrow">Geopolitical Cost Matrix</p>
       <h2 class="section-title">Who Paid What — Country-Level Impact</h2>
@@ -378,32 +449,32 @@
       <h3 class="footer-title">Islamabad Memorandum &nbsp;·&nbsp; The Aftermath</h3>
 
       <div class="footer-stats">
-        <div class="footer-stat" style="border-color:#1f9e89">
-          <div class="footer-stat-value" style="color:#1f9e89">~$81/bbl</div>
+        <div class="footer-stat" style="border-color:var(--teal)">
+          <div class="footer-stat-value" style="color:var(--teal)">~$81/bbl</div>
           <div class="footer-stat-delta">down from $134.6 peak (−40%)</div>
           <div class="footer-stat-label">Brent at resolution</div>
         </div>
-        <div class="footer-stat" style="border-color:#35b779">
-          <div class="footer-stat-value" style="color:#35b779">$12B</div>
+        <div class="footer-stat" style="border-color:var(--teal)">
+          <div class="footer-stat-value" style="color:var(--teal)">$12B</div>
           <div class="footer-stat-delta">precondition for talks</div>
           <div class="footer-stat-label">Frozen assets released</div>
         </div>
-        <div class="footer-stat" style="border-color:#6ece58">
-          <div class="footer-stat-value" style="color:#6ece58">11</div>
+        <div class="footer-stat" style="border-color:var(--teal)">
+          <div class="footer-stat-value" style="color:var(--teal)">11</div>
           <div class="footer-stat-delta">India-bound, June 20 alone</div>
           <div class="footer-stat-label">First Hormuz transits</div>
         </div>
-        <div class="footer-stat" style="border-color:#b5de2b">
-          <div class="footer-stat-value" style="color:#b5de2b">112 days</div>
+        <div class="footer-stat" style="border-color:var(--crisis)">
+          <div class="footer-stat-value" style="color:var(--crisis)">112 days</div>
           <div class="footer-stat-delta">Feb 28 – Jun 20, 2026</div>
           <div class="footer-stat-label">Duration of conflict</div>
         </div>
       </div>
 
       <div class="footer-credits">
-        <strong style="color:#666">Research &amp; Analysis:</strong> Sahasrik Ragani &nbsp;·&nbsp;
+        <strong style="color:var(--muted)">Research &amp; Analysis:</strong> Sahasrik Ragani &nbsp;·&nbsp;
         <a href="https://ahduni.edu.in/academics/schools-centres/stepwell-centre-for-asian-futures/" target="_blank">Stepwell Centre for Asian Futures, Ahmedabad University</a><br>
-        <strong style="color:#666">Data Sources:</strong>
+        <strong style="color:var(--muted)">Data Sources:</strong>
         EIA &nbsp;·&nbsp; RBI Weekly Statistical Supplement &nbsp;·&nbsp; PPAC (GoI) &nbsp;·&nbsp;
         IMO &nbsp;·&nbsp; Vortexa &nbsp;·&nbsp; Kpler &nbsp;·&nbsp; Clarksons Research &nbsp;·&nbsp;
         Lloyd's List &nbsp;·&nbsp; S&P Global Commodity Insights &nbsp;·&nbsp;
@@ -412,11 +483,34 @@
         OPEC Annual Statistical Bulletin &nbsp;·&nbsp; Argus Media &nbsp;·&nbsp;
         Reuters &nbsp;·&nbsp; Bloomberg &nbsp;·&nbsp; AP &nbsp;·&nbsp; Al Jazeera &nbsp;·&nbsp;
         US CENTCOM &nbsp;·&nbsp; IAEA &nbsp;·&nbsp; Visual Capitalist &nbsp;·&nbsp; IMF PortWatch &nbsp;·&nbsp; UKMTO<br>
-        <strong style="color:#666">Built with:</strong> Leaflet.js &nbsp;·&nbsp; Chart.js &nbsp;·&nbsp; D3.js &nbsp;·&nbsp; CartoDB Dark Matter tiles<br>
-        <span style="color:#2a2a2a">All data presented without interpretation. Analysis provided by domain experts. This project is affiliated with the Stepwell Centre for Asian Futures panel event series.</span>
+        <strong style="color:var(--muted)">Built with:</strong> Leaflet.js &nbsp;·&nbsp; Chart.js &nbsp;·&nbsp; D3.js &nbsp;·&nbsp; CartoDB Positron / Dark Matter tiles<br>
+        <span style="color:var(--faint)">All data presented without interpretation. Analysis provided by domain experts. This project is affiliated with the Stepwell Centre for Asian Futures panel event series.</span>
+      </div>
+
+      <div class="footer-redesign">
+        <img class="redesign-avatar" src="assets/jeremy.png" alt="Jeremy Fritzhand" width="54" height="54" loading="lazy" onerror="this.classList.add('is-missing')" />
+        <div class="redesign-meta">
+          <div class="redesign-role">Fork &amp; editorial redesign</div>
+          <div class="redesign-name">Jeremy Fritzhand</div>
+          <div class="redesign-links">
+            <a href="https://github.com/fritzhand" target="_blank" rel="noopener">GitHub</a> &nbsp;·&nbsp;
+            <a href="https://www.linkedin.com/in/fritzhand/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+          <div class="redesign-note">Designed with gstack (Claude Code) as design partner.</div>
+        </div>
       </div>
     </div>
   </footer>
+
+  <!-- ── SECTION-NAV / SCROLL ASSIST (up + down) ── -->
+  <div id="section-nav" class="section-nav">
+    <button class="section-nav-btn" id="section-nav-up" type="button" aria-label="Previous section">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+    </button>
+    <button class="section-nav-btn" id="section-nav-down" type="button" aria-label="Next section">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </div>
 
   <!-- ── SCRIPTS (load order matters) ── -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
