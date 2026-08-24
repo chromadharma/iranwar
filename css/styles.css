@@ -18,13 +18,13 @@
   --surface:      #FFFFFF;
   --inset:        #F4F2EC;
   --rule:         #E4E1DA;
-  --rule-strong:  #CFC9BC;
+  --rule-strong:  #1A1A1A;
 
   /* Ink */
   --ink:          #1A1A1A;
   --body:         #2B2B2B;
-  --muted:        #6B6B6B;
-  --faint:        #756F63;
+  --muted:        #1A1A1A;
+  --faint:        #2B2B2B;
 
   /* Accents */
   --crisis:       #A61B1B;
@@ -52,7 +52,7 @@
   --data-ink:    #1A1A1A;
   --data-crisis: #A61B1B;
   --data-blue:   #326891;
-  --data-gray:   #9A9488;
+  --data-gray:   #1A1A1A;
 
   /* Legacy surface/text aliases remapped to editorial tokens */
   --bg-base:      var(--paper);
@@ -74,18 +74,19 @@
   --font-sans:    'Work Sans', system-ui, sans-serif;
 
   /* Layout */
-  --max-width:    1080px;
-  --measure:      680px;
-  --section-pad:  96px 24px;
+  --max-width:    1280px;
+  --measure:      700px;
+  --section-pad:  88px 16px;
   --card-radius:  3px;
-  --nav-h:        56px; /* updated at runtime; sticky offsets key off this */
+  --nav-h:        118px; /* updated at runtime: TOTAL fixed header height (main nav + TOC bar stacked) */
+  --main-nav-h:   72px; /* updated at runtime: just the main nav row, so the TOC bar can dock beneath it */
 
   /* Phase colors — editorial escalation (calm → crisis → resolution) */
-  --phase-outbreak:   var(--faint);
+  --phase-outbreak:   #326891;
   --phase-closure:    var(--v2);
   --phase-escalation: var(--v3);
   --phase-peak:       var(--crisis);
-  --phase-stalemate:  #8A8478;
+  --phase-stalemate:  #B8860B;
   --phase-ceasefire1: var(--teal);
   --phase-collapse:   var(--crisis-deep);
   --phase-blockade:   var(--v6);
@@ -100,12 +101,12 @@
   --surface:      #1B1813;
   --inset:        #201C16;
   --rule:         #332E26;
-  --rule-strong:  #463F33;
+  --rule-strong:  #F1ECE2;
 
   --ink:          #F1ECE2;
   --body:         #DAD3C6;
-  --muted:        #9E978A;
-  --faint:        #8F8878;
+  --muted:        #F1ECE2;
+  --faint:        #DAD3C6;
 
   --crisis:       #E06A5E;
   --crisis-deep:  #C24A44;
@@ -142,7 +143,7 @@ body {
   background: var(--paper);
   color: var(--body);
   font-family: var(--font-read);
-  font-size: 19px;
+  font-size: 21px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
@@ -173,10 +174,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--rule);
-  height: 56px;
+  height: 72px;
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 16px;
   gap: 24px;
 }
 
@@ -195,7 +196,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .nav-logo-lockup {
-  height: 38px;
+  height: 52px;
   width: auto;
   flex-shrink: 0;
   display: block;
@@ -205,7 +206,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .nav-logo-primary {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: 0.6px;
@@ -214,7 +215,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .nav-logo-secondary {
   font-family: var(--font-sans);
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -229,7 +230,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .nav-project-title {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--ink);
   white-space: nowrap;
@@ -264,7 +265,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   align-items: center;
   gap: 6px;
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -283,7 +284,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .nav-phase-pill {
   font-family: var(--font-sans);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.8px;
   padding: 3px 8px;
@@ -295,7 +296,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* ─── HERO / MASTHEAD ─── */
 #hero {
   background: var(--paper);
-  padding: calc(var(--nav-h) + 92px) 24px 72px;
+  padding: calc(var(--nav-h) + 92px) 16px 72px;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--rule);
@@ -318,13 +319,13 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   margin-bottom: 28px;
 }
 .hero-eyebrow .eyebrow-primary {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--crisis);
   letter-spacing: 0.2em;
 }
 .hero-eyebrow .eyebrow-secondary {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--muted);
   letter-spacing: 0.16em;
@@ -333,7 +334,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .hero-title {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-size: clamp(2.4rem, 9vw, 4.5rem);
+  font-size: clamp(2.6rem, 9.5vw, 4.8rem);
   font-weight: 600;
   line-height: 1.0;
   letter-spacing: -0.015em;
@@ -344,7 +345,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .hero-subtitle {
   font-family: var(--font-read);
-  font-size: clamp(19px, 2.4vw, 24px);
+  font-size: clamp(21px, 2.6vw, 26px);
   color: var(--muted);
   max-width: 640px;
   line-height: 1.5;
@@ -365,7 +366,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .hero-stat-number {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(32px, 4.2vw, 50px);
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -375,7 +376,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .hero-stat-label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -394,7 +395,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   align-items: center;
   gap: 14px;
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.03em;
   color: var(--muted);
   margin-bottom: 44px;
@@ -413,7 +414,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .byline-meta { display: flex; flex-direction: column; line-height: 1.4; }
 .byline-name-line { color: var(--body); }
-.byline-dateline { color: var(--muted); font-size: 12px; }
+.byline-dateline { color: var(--muted); font-size: 14px; }
 
 .hero-byline-name {
   font-weight: 600;
@@ -445,7 +446,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* ─── ARTICLE LEDE ─── */
 #lede {
   background: var(--paper);
-  padding: 88px 24px;
+  padding: 88px 16px;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -456,7 +457,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .lede-standfirst {
   font-family: var(--font-read);
-  font-size: clamp(22px, 2.8vw, 27px);
+  font-size: clamp(24px, 3vw, 30px);
   line-height: 1.45;
   color: var(--ink);
   margin-bottom: 32px;
@@ -464,7 +465,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .lede-body {
   font-family: var(--font-read);
-  font-size: 19px;
+  font-size: 21px;
   line-height: 1.75;
   color: var(--body);
   margin-bottom: 28px;
@@ -494,7 +495,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   font-family: var(--font-sans);
   font-style: italic;
   font-weight: 500;
-  font-size: 14.5px;
+  font-size: 16.5px;
   line-height: 1.5;
   color: var(--ink);
   margin: 0 0 4px;
@@ -504,65 +505,72 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   display: block;
   font-family: var(--font-sans);
   font-style: normal;
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-/* ─── QUICK LINKS (in-page section jump nav) ─── */
-.quick-links {
-  margin-top: 8px;
+/* ─── TOC NAV (ever-present table of contents, fixed under main nav) ─── */
+#toc-nav {
+  position: fixed;
+  top: var(--main-nav-h);
+  left: 0; right: 0;
+  z-index: 850;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule-strong);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
-.quick-links-label {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-
-.quick-links-row {
+.toc-nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 16px;
+  width: max-content;
+  min-width: 100%;
 }
 
-.quick-link-pill {
+.toc-link {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  padding: 7px 12px;
+  padding: 7px 13px;
   border-radius: 2px;
   white-space: nowrap;
   text-decoration: none;
-  background: var(--surface);
   color: var(--body);
-  border: 1px solid var(--rule);
+  border: 1px solid transparent;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.quick-link-pill:hover {
-  color: var(--paper);
-  background: var(--crisis);
-  border-color: var(--crisis);
+.toc-link:hover {
+  color: var(--ink);
+  background: var(--inset);
   text-decoration: none;
 }
 
-@media (max-width: 600px) {
-  .quick-links-row { gap: 6px; }
-  .quick-link-pill { font-size: 11px; padding: 6px 10px; }
+.toc-link.is-current {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
-/* Offset anchor-jump targets so content doesn't hide under the fixed nav */
+@media (max-width: 600px) {
+  .toc-link { font-size: 12.5px; padding: 6px 11px; }
+}
+
+/* Offset anchor-jump targets so content doesn't hide under the fixed nav + TOC bar */
 #scrollytelling,
 #energy-markets,
 #crude-routes,
@@ -572,7 +580,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 #remittances,
 #geopolitical-cost,
 #resolution-footer {
-  scroll-margin-top: calc(var(--nav-h) + 54px);
+  scroll-margin-top: calc(var(--nav-h) + 24px);
 }
 
 /* ─── PHASE LEGEND (sticky nav) ─── */
@@ -586,7 +594,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
-  padding: 11px 24px;
+  padding: 11px 16px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   transition: box-shadow 0.2s ease;
@@ -610,7 +618,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   align-items: center;
   gap: 6px;
   font-family: var(--font-sans);
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -654,7 +662,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .section-eyebrow {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--crisis);
   letter-spacing: 0.14em;
@@ -664,7 +672,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.4vw, 42px);
+  font-size: clamp(30px, 3.6vw, 46px);
   font-weight: 600;
   line-height: 1.08;
   letter-spacing: -0.01em;
@@ -674,7 +682,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .section-subtitle {
   font-family: var(--font-read);
-  font-size: 20px;
+  font-size: 22px;
   color: var(--muted);
   max-width: var(--measure);
   margin-bottom: 44px;
@@ -727,7 +735,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .map-step-date {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--crisis);
   letter-spacing: 0.12em;
@@ -737,7 +745,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .map-step-headline {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1.25;
@@ -755,7 +763,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .map-metric {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -799,7 +807,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .step-phase-date {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -808,7 +816,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .step-headline {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 29px;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -818,7 +826,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .step-narrative {
   font-family: var(--font-read);
-  font-size: 18px;
+  font-size: 20px;
   color: var(--body);
   line-height: 1.7;
   max-width: 440px;
@@ -833,7 +841,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .step-metric-chip {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
   padding: 5px 11px;
   border-radius: 2px;
@@ -846,7 +854,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .step-source {
   font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-size: 12.5px;
   color: var(--faint);
   margin-top: 14px;
 }
@@ -870,7 +878,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .chart-card-title {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.005em;
   line-height: 1.2;
@@ -893,7 +901,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .chart-source {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--faint);
   margin-top: 16px;
   padding-top: 12px;
@@ -909,7 +917,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .chart-desc {
   font-family: var(--font-read);
-  font-size: 17px;
+  font-size: 19px;
   color: var(--body);
   margin-bottom: 20px;
   line-height: 1.6;
@@ -953,7 +961,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .slider-date-label {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
@@ -961,7 +969,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .hormuz-badge {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   padding: 5px 12px;
   border-radius: 2px;
@@ -1009,7 +1017,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
@@ -1036,7 +1044,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .stat-card-value {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -1049,7 +1057,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .stat-card-label {
   font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-size: 12.5px;
   color: var(--muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1083,7 +1091,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .sandbox-event-headline {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 7px;
@@ -1096,7 +1104,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .sandbox-event-body {
   font-family: var(--font-read);
-  font-size: 16px;
+  font-size: 18px;
   color: var(--body);
   line-height: 1.6;
   overflow: hidden;
@@ -1114,7 +1122,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .sankey-btn {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
   padding: 7px 16px;
@@ -1151,12 +1159,12 @@ input[type="range"].crisis-slider::-moz-range-thumb {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-read);
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .geo-table th {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1179,7 +1187,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .geo-table .country-cell {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--ink);
   white-space: nowrap;
@@ -1188,7 +1196,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .geo-table .role-badge {
   display: inline-block;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1202,7 +1210,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .net-badge {
   display: inline-block;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   padding: 3px 9px;
   border-radius: 2px;
@@ -1222,7 +1230,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 #resolution-footer {
   background: var(--paper);
   border-top: 3px solid var(--ink);
-  padding: 72px 24px 56px;
+  padding: 72px 16px 56px;
 }
 
 .footer-inner {
@@ -1232,7 +1240,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .footer-eyebrow {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--crisis);
   letter-spacing: 0.16em;
@@ -1242,7 +1250,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .footer-title {
   font-family: var(--font-display);
-  font-size: clamp(26px, 3.2vw, 38px);
+  font-size: clamp(28px, 3.4vw, 42px);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -1265,7 +1273,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .footer-stat-value {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -1274,14 +1282,14 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .footer-stat-delta {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-bottom: 3px;
 }
 
 .footer-stat-label {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--faint);
@@ -1291,7 +1299,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
   border-top: 1px solid var(--rule);
   padding-top: 28px;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.8;
 }
@@ -1319,7 +1327,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .redesign-avatar.is-missing { display: none; }
 .redesign-meta { font-family: var(--font-sans); line-height: 1.5; }
 .redesign-role {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1327,14 +1335,14 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 }
 .redesign-name {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--ink);
 }
-.redesign-links { font-size: 12.5px; margin-top: 3px; }
+.redesign-links { font-size: 14.5px; margin-top: 3px; }
 .redesign-links a { color: var(--link); }
 .redesign-links a:hover { color: var(--crisis); }
-.redesign-note { font-size: 12px; color: var(--faint); margin-top: 5px; }
+.redesign-note { font-size: 14px; color: var(--faint); margin-top: 5px; }
 
 /* ─── LEAFLET OVERRIDES (light / Positron) ─── */
 .leaflet-container {
@@ -1369,7 +1377,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .map-popup-date {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--crisis);
   letter-spacing: 0.12em;
@@ -1379,7 +1387,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .map-popup-title {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 8px;
@@ -1388,7 +1396,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .map-popup-body {
   font-family: var(--font-read);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--body);
   line-height: 1.6;
   margin-bottom: 8px;
@@ -1396,7 +1404,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .map-popup-source {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--faint);
 }
 
@@ -1409,7 +1417,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 .leaflet-control-attribution {
   background: color-mix(in srgb, var(--paper) 80%, transparent) !important;
   color: var(--faint) !important;
-  font-size: 9px !important;
+  font-size: 11px !important;
 }
 .leaflet-control-attribution a { color: var(--muted) !important; }
 
@@ -1443,14 +1451,14 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .sankey-label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   fill: var(--body);
   pointer-events: none;
 }
 
 .sankey-col-header {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   fill: var(--muted);
   letter-spacing: 0.08em;
@@ -1459,7 +1467,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 
 .sankey-blocked-label {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   fill: var(--crisis);
   letter-spacing: 0.04em;
@@ -1473,7 +1481,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
   height: 200px;
   color: var(--faint);
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -1531,7 +1539,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
     z-index: 5;
   }
 
-  .scroll-steps { padding: 20px 24px 56px 30px; }
+  .scroll-steps { padding: 20px 16px 56px 30px; }
   .scroll-steps::before { height: 1vh; }
   .scroll-step  {
     min-height: 0;
@@ -1541,7 +1549,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
     justify-content: flex-start;
   }
   .step-headline, .step-narrative, .step-phase-date, .step-metrics, .step-source { padding-right: 6px; }
-  .step-narrative { max-width: none; font-size: 17px; }
+  .step-narrative { max-width: none; font-size: 19px; }
 
   .chart-grid-2 { grid-template-columns: 1fr; }
   .stat-cards   { grid-template-columns: repeat(2, 1fr); }
@@ -1562,7 +1570,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
   .nav-divider { display: none; }
   .nav-logo { flex: 0 1 auto; min-width: 0; }
   .nav-logo-text { min-width: 0; }
-  .nav-logo-lockup { height: 30px; }
+  .nav-logo-lockup { height: 40px; }
   .nav-logo-secondary { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .nav-right { margin-left: auto; }
   .nav-project-title {
@@ -1570,7 +1578,7 @@ input[type="range"].crisis-slider::-moz-range-thumb {
     flex-basis: 100%;
     width: 100%;
     white-space: normal;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.3;
     padding-top: 6px;
     border-top: 1px solid var(--rule);
@@ -1582,13 +1590,13 @@ input[type="range"].crisis-slider::-moz-range-thumb {
 }
 
 @media (max-width: 600px) {
-  :root { --section-pad: 56px 18px; }
-  body { font-size: 18px; }
+  :root { --section-pad: 48px 12px; }
+  body { font-size: 20px; }
   .hero-stats { grid-template-columns: 1fr 1fr; }
   .stat-cards { grid-template-columns: 1fr 1fr; }
   .footer-stats { grid-template-columns: 1fr 1fr; }
   .nav-phase-pill { display: none; }
-  .geo-table { font-size: 14px; }
+  .geo-table { font-size: 16px; }
   .geo-table th, .geo-table td { padding: 10px 8px; }
   /* size the buttons, not the flex container — sizing the container squashed
      the two stacked 46px buttons into a 44px box and rendered them as ovals */

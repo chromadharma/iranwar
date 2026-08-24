@@ -26,17 +26,19 @@
 
 /* Editorial categorical/escalation palette — replaces viridis.
    Ordered low→high salience; chosen so multi-series charts stay
-   distinguishable in editorial tones (gray → blue/teal → ink → oxblood). */
+   distinguishable in editorial tones (blue → teal → ink → oxblood).
+   No greys — every step reads as a black, a white/paper tint, or a
+   saturated hue from the site's palette. */
 const V = {
-  v0:'#C9C3B6', v1:'#9A9488', v2:'#326891', v3:'#3E6B5E',
-  v4:'#8A8478', v5:'#1A1A1A', v6:'#B8860B', v7:'#C8756B',
+  v0:'#DCE6EC', v1:'#7FA5BC', v2:'#326891', v3:'#3E6B5E',
+  v4:'#8C6D1F', v5:'#1A1A1A', v6:'#B8860B', v7:'#C8756B',
   v8:'#7A1010', v9:'#A61B1B'
 };
 
 /* Phase colors — editorial escalation (calm → crisis → resolution) */
 const PC = {
-  outbreak:'#9A9488', closure:'#C8756B', escalation:'#BC4C41',
-  peak:'#A61B1B',     stalemate:'#8A8478', ceasefire1:'#3E6B5E',
+  outbreak:'#326891', closure:'#C8756B', escalation:'#BC4C41',
+  peak:'#A61B1B',     stalemate:'#B8860B', ceasefire1:'#3E6B5E',
   collapse:'#7A1010', blockade:'#4A0909', relapse:'#BC4C41',
   resolution:'#3E6B5E', recovery:'#5E8A79'
 };
@@ -62,23 +64,28 @@ function getHormuzStatus(day) {
   return 'open';                                   // post-MoU
 }
 
-/* Chart.js global editorial (light) defaults */
-Chart.defaults.color          = '#6B6B6B';
-Chart.defaults.borderColor    = '#E4E1DA';
-Chart.defaults.font.family    = "'Work Sans', system-ui, sans-serif";
-Chart.defaults.font.size      = 11;
+/* Chart.js global editorial (light) defaults.
+   Guarded: if the Chart.js CDN fails to load, the rest of this file (nav,
+   TOC scrollspy, theme toggle, phase legend) must still run — only the
+   charts themselves would be unavailable. */
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.color          = '#1A1A1A';
+  Chart.defaults.borderColor    = '#E4E1DA';
+  Chart.defaults.font.family    = "'Work Sans', system-ui, sans-serif";
+  Chart.defaults.font.size      = 13;
+}
 
 const TIP = {
   backgroundColor:'#FFFFFF', borderColor:'#E4E1DA', borderWidth:1,
   titleColor:'#1A1A1A', bodyColor:'#2B2B2B', padding:12,
-  titleFont:{ family:"'Work Sans', sans-serif", weight:'600', size:12 },
-  bodyFont:{ family:"'Work Sans', sans-serif", size:11 }
+  titleFont:{ family:"'Work Sans', sans-serif", weight:'600', size:14 },
+  bodyFont:{ family:"'Work Sans', sans-serif", size:13 }
 };
 
 function mkScale(overrides = {}) {
   return {
     grid:  { color:'#EEEBE4' },
-    ticks: { color:'#6B6B6B', font:{ family:"'Work Sans', sans-serif", size:10 } },
+    ticks: { color:'#1A1A1A', font:{ family:"'Work Sans', sans-serif", size:12 } },
     ...overrides
   };
 }
@@ -106,7 +113,7 @@ function tileURL() {
 /* Re-theme every Chart.js instance for the current mode */
 function applyChartTheme(dark) {
   const grid     = dark ? '#332E26' : '#EEEBE4';
-  const tick     = dark ? '#9E978A' : '#6B6B6B';
+  const tick     = dark ? '#DAD3C6' : '#1A1A1A';
   const inkLight = '#F1ECE2';
   const inkDark  = '#1A1A1A';
   Chart.defaults.color       = tick;
@@ -269,13 +276,26 @@ function highlightPhasePill(phase) {
   });
 }
 
-function navHeight() {
-  return document.getElementById('main-nav')?.offsetHeight || 56;
+function mainNavHeight() {
+  return document.getElementById('main-nav')?.offsetHeight || 72;
 }
 
-/* Publish the live nav height so sticky offsets (CSS var --nav-h) adapt to
-   the stacked mobile header. */
+function tocNavHeight() {
+  return document.getElementById('toc-nav')?.offsetHeight || 0;
+}
+
+/* Combined fixed-header height (main nav + ever-present TOC bar stacked).
+   Everything that offsets against "the top chrome" — hero padding, the
+   phase legend's sticky top, anchor scroll-margin, scrollToPhase() — keys
+   off this so it doesn't need to know the TOC bar exists separately. */
+function navHeight() {
+  return mainNavHeight() + tocNavHeight();
+}
+
+/* Publish the live header heights so sticky/fixed offsets (CSS vars
+   --main-nav-h, --nav-h) adapt to the stacked mobile header + TOC bar. */
 function setNavHeightVar() {
+  document.documentElement.style.setProperty('--main-nav-h', mainNavHeight() + 'px');
   document.documentElement.style.setProperty('--nav-h', navHeight() + 'px');
 }
 
@@ -289,6 +309,72 @@ function initStickyLegend() {
     { rootMargin: `-${navHeight()}px 0px 0px 0px`, threshold: 0 }
   );
   io.observe(sentinel);
+}
+
+/* ── EVER-PRESENT TABLE OF CONTENTS: highlight whichever section is in view ──
+   Uses a direct "which section's top has most recently crossed the header
+   line" check on scroll, rather than IntersectionObserver — the observer's
+   percentage-based band gets ambiguous for short sections (e.g. Geopolitical
+   Cost, which can be shorter than the viewport itself). */
+function initTocNav() {
+  const links = Array.from(document.querySelectorAll('#toc-nav .toc-link'));
+  if (!links.length) return;
+
+  const targets = links
+    .map(a => ({ a, el: document.getElementById(a.dataset.tocTarget) }))
+    .filter(t => t.el);
+  if (!targets.length) return;
+
+  function setCurrent(id) {
+    const bar = document.getElementById('toc-nav');
+    links.forEach(a => {
+      const on = a.dataset.tocTarget === id;
+      a.classList.toggle('is-current', on);
+      if (on && bar && bar.scrollWidth > bar.clientWidth + 4) {
+        const cRect = bar.getBoundingClientRect();
+        const aRect = a.getBoundingClientRect();
+        const left  = bar.scrollLeft + (aRect.left - cRect.left) - (cRect.width / 2) + (aRect.width / 2);
+        bar.scrollTo({ left: Math.max(left, 0), behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+      }
+    });
+  }
+
+  let lastCurrent = null;
+  function update() {
+    /* Must be >= the CSS scroll-margin-top buffer (navHeight + 24px) — a
+       section anchor-jumped to its resting position sits exactly there,
+       and a tighter refLine would read that resting position as "not yet
+       reached", stranding the highlight on the previous section. */
+    const refLine = navHeight() + 26;
+    /* Sections are in document order — the active one is the last whose
+       top has crossed above the header line. */
+    let current = targets[0].el.id;
+    for (const t of targets) {
+      if (t.el.getBoundingClientRect().top <= refLine) current = t.el.id;
+      else break;
+    }
+    /* At the true bottom of the page the last section's heading may not be
+       able to reach refLine (not enough page left to scroll) — force it
+       active rather than leaving the second-to-last one highlighted. */
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom) current = targets[targets.length - 1].el.id;
+    if (current !== lastCurrent) { lastCurrent = current; setCurrent(current); }
+  }
+
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; update(); });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  /* Safety net: guarantees the final settled position is always reflected,
+     even if a fast/animated scroll's last frame doesn't cleanly land on an
+     rAF tick. Progressive enhancement — no-op in browsers without it. */
+  window.addEventListener('scrollend', update, { passive: true });
+  update();
 }
 
 /* Floating scroll assist (bottom-right, up + down). On mobile it steps through
@@ -442,7 +528,7 @@ function buildScrollSteps() {
       <div class="step-metrics">
         <div class="step-metric-chip"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>Brent <strong>$${step.metric_brent}</strong>/bbl</div>
         <div class="step-metric-chip"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>Oman <strong>$${step.metric_oman}</strong>/bbl</div>
-        ${step.metric_note ? `<div class="step-metric-chip"><em style="color:#6B6B6B">${step.metric_note}</em></div>` : ''}
+        ${step.metric_note ? `<div class="step-metric-chip"><em style="color:#1A1A1A">${step.metric_note}</em></div>` : ''}
       </div>
       <p class="step-source">
         ${((crisisData.mapEvents||[]).find(e => e.id === step.eventId)||{}).source || ''}
@@ -692,7 +778,7 @@ function drawSankey(svgId, { nodes, links }, colHeaders = [], opts = {}) {
     let y = PAD.top;
     cns.forEach(n => {
       const h = Math.max((n.val / tot) * usable, 8);
-      pos[n.idx] = { x:xBase, y, h, midY: y + h / 2, color: n.color || '#6B6B6B' };
+      pos[n.idx] = { x:xBase, y, h, midY: y + h / 2, color: n.color || '#1A1A1A' };
       y += h + NG;
     });
   }
@@ -763,8 +849,8 @@ function drawSankey(svgId, { nodes, links }, colHeaders = [], opts = {}) {
       t.setAttribute('x', lx);
       t.setAttribute('y', ly0 + li * lh);
       t.setAttribute('text-anchor', isLast ? 'end' : 'start');
-      t.setAttribute('fill', '#6B6B6Baaa');
-      t.setAttribute('font-size', '9');
+      t.setAttribute('fill', '#1A1A1A');
+      t.setAttribute('font-size', '11');
       t.setAttribute('font-family', "'Work Sans', sans-serif");
       t.textContent = line;
       svgEl.appendChild(t);
@@ -781,8 +867,8 @@ function drawSankey(svgId, { nodes, links }, colHeaders = [], opts = {}) {
     t.setAttribute('x', isLast ? xBase + NW : xBase);
     t.setAttribute('y', PAD.top - 14);
     t.setAttribute('text-anchor', isLast ? 'end' : 'start');
-    t.setAttribute('fill', '#6B6B6B555');
-    t.setAttribute('font-size', '8.5');
+    t.setAttribute('fill', '#1A1A1A');
+    t.setAttribute('font-size', '10.5');
     t.setAttribute('font-family', "'Work Sans', sans-serif");
     t.setAttribute('font-weight', '700');
     t.setAttribute('letter-spacing', '1');
@@ -801,7 +887,7 @@ function drawSankey(svgId, { nodes, links }, colHeaders = [], opts = {}) {
     svgEl.appendChild(bg);
     const bt = document.createElementNS(NS, 'text');
     bt.setAttribute('x', bx); bt.setAttribute('y', by);
-    bt.setAttribute('fill', '#fde725'); bt.setAttribute('font-size', '8');
+    bt.setAttribute('fill', '#FBFAF8'); bt.setAttribute('font-size', '10');
     bt.setAttribute('font-family', "'Work Sans', sans-serif");
     bt.setAttribute('font-weight', '700');
     bt.textContent = 'BLOCKED Mar 1 – present';
@@ -882,11 +968,11 @@ function initOilChart() {
       responsive:true, maintainAspectRatio:false,
       plugins:{
         tooltip:{ ...TIP, callbacks:{ label:c=>` ${c.dataset.label}: $${c.parsed.y.toFixed(2)}/bbl` }},
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:22, padding:16 }}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:22, padding:16 }}
       },
       scales:{
-        x: mkScale({ ticks:{ color:'#6B6B6B', maxRotation:50, font:{ size:9 }}}),
-        y: mkScale({ min:60, max:180, title:{ display:true, text:'USD/bbl', color:'#6B6B6B', font:{ size:10 }}})
+        x: mkScale({ ticks:{ color:'#1A1A1A', maxRotation:50, font:{ size:11 }}}),
+        y: mkScale({ min:60, max:180, title:{ display:true, text:'USD/bbl', color:'#1A1A1A', font:{ size:12 }}})
       }
     }
   });
@@ -911,10 +997,10 @@ function initSandboxOilChart() {
       responsive:true, maintainAspectRatio:false,
       plugins:{
         tooltip:{ ...TIP, callbacks:{ label:c=>` ${c.dataset.label}: $${c.parsed.y.toFixed(2)}` }},
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:16, font:{ size:9 }}}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:16, font:{ size:11 }}}
       },
       scales:{
-        x: mkScale({ ticks:{ color:'#6B6B6B', maxRotation:45, font:{ size:8 }}}),
+        x: mkScale({ ticks:{ color:'#1A1A1A', maxRotation:45, font:{ size:10 }}}),
         y: mkScale({ min:60, max:180 })
       }
     }
@@ -956,7 +1042,7 @@ function initHormuzBar() {
               borderColor:'rgba(26,26,26,0.2)', borderWidth:1.5,
               borderDash:[5,4],
               label:{ display:true, content:'IMF PortWatch baseline ~94/day',
-                color:'#6B6B6B', font:{ family:"'Work Sans', sans-serif", size:9 },
+                color:'#1A1A1A', font:{ family:"'Work Sans', sans-serif", size:11 },
                 position:'end', backgroundColor:'transparent' }
             },
             eiaBaseline:{
@@ -964,16 +1050,16 @@ function initHormuzBar() {
               borderColor:'rgba(26,26,26,0.1)', borderWidth:1,
               borderDash:[3,6],
               label:{ display:true, content:"EIA/Lloyd's ~100/day",
-                color:'#2B2B2B', font:{ family:"'Work Sans', sans-serif", size:8 },
+                color:'#2B2B2B', font:{ family:"'Work Sans', sans-serif", size:10 },
                 position:'start', backgroundColor:'transparent' }
             }
           }
         }
       },
       scales:{
-        x: mkScale({ ticks:{ color:'#6B6B6B', font:{ size:9 }}}),
+        x: mkScale({ ticks:{ color:'#1A1A1A', font:{ size:11 }}}),
         y: mkScale({ min:0, max:110,
-          title:{ display:true, text:'Transits/day', color:'#6B6B6B', font:{ size:10 }},
+          title:{ display:true, text:'Transits/day', color:'#1A1A1A', font:{ size:12 }},
           grid:{ color:'#EEEBE4' }
         })
       }
@@ -1008,9 +1094,9 @@ function initFXReserves() {
         legend:{ display:false }
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:45, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:45, font:{ size:11 }}}),
         y: mkScale({ min:690, max:735,
-          title:{ display:true, text:'USD Billion', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'USD Billion', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1044,16 +1130,16 @@ function initFXRate() {
               type:'line', yMin:96.844, yMax:96.844,
               borderColor: V.v9 + '88', borderWidth:1.5, borderDash:[5,4],
               label:{ display:true, content:'₹96.844 peak (May 20, CONFIRMED)',
-                color: V.v9, font:{ family:"'Work Sans', sans-serif", size:9 },
+                color: V.v9, font:{ family:"'Work Sans', sans-serif", size:11 },
                 position:'end', backgroundColor:'rgba(0,0,0,0.5)' }
             }
           }
         }
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:45, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:45, font:{ size:11 }}}),
         y: mkScale({ min:85, max:98,
-          title:{ display:true, text:'₹ per $1', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'₹ per $1', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1088,9 +1174,9 @@ function initCAD() {
         legend:{ display:false }
       },
       scales:{
-        x: mkScale({ ticks:{ color:'#6B6B6B', font:{ size:9 }, maxRotation:0 }}),
+        x: mkScale({ ticks:{ color:'#1A1A1A', font:{ size:11 }, maxRotation:0 }}),
         y: mkScale({ min:-3.2, max:0.3,
-          title:{ display:true, text:'% of GDP', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'% of GDP', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1127,23 +1213,23 @@ function initWarRisk() {
               type:'line', yMin:2.5, yMax:2.5,
               borderColor: V.v9 + '99', borderWidth:1.5, borderDash:[5,4],
               label:{ display:true, content:'2.5% AWRP peak (early Mar — S&P Global CONFIRMED)',
-                color: V.v9, font:{ family:"'Work Sans', sans-serif", size:9 },
+                color: V.v9, font:{ family:"'Work Sans', sans-serif", size:11 },
                 position:'end', backgroundColor:'rgba(0,0,0,0.6)' }
             },
             baseline:{
               type:'line', yMin:0.125, yMax:0.125,
               borderColor:'rgba(26,26,26,0.15)', borderWidth:1, borderDash:[3,5],
               label:{ display:true, content:'Pre-conflict baseline 0.10–0.15%',
-                color:'#6B6B6B', font:{ family:"'Work Sans', sans-serif", size:8 },
+                color:'#1A1A1A', font:{ family:"'Work Sans', sans-serif", size:10 },
                 position:'start', backgroundColor:'transparent' }
             }
           }
         }
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:40, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:40, font:{ size:11 }}}),
         y: mkScale({ min:0, max:3.0,
-          title:{ display:true, text:'AWRP % of H&M value / 7 days', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'AWRP % of H&M value / 7 days', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1172,18 +1258,18 @@ function initMariners() {
       responsive:true, maintainAspectRatio:false,
       plugins:{
         tooltip:{ ...TIP },
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:20 }},
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:20 }},
         annotation:{
           annotations:{
             imoAlert:{ type:'line', yMin:20000, yMax:20000, borderColor:V.v9+'55',
               borderWidth:1.5, borderDash:[5,4],
               label:{ display:true, content:'IMO declared humanitarian crisis (Apr 21)',
-                color:V.v9, font:{ family:"'Work Sans', sans-serif", size:9 },
+                color:V.v9, font:{ family:"'Work Sans', sans-serif", size:11 },
                 position:'start', backgroundColor:'rgba(0,0,0,0.5)' }},
             genCaine:{ type:'line', yMin:22500, yMax:22500, borderColor:V.v8+'55',
               borderWidth:1.5, borderDash:[3,5],
               label:{ display:true, content:'Gen. Caine confirmed 22,500 (May 6)',
-                color:V.v8, font:{ family:"'Work Sans', sans-serif", size:9 },
+                color:V.v8, font:{ family:"'Work Sans', sans-serif", size:11 },
                 position:'end', backgroundColor:'rgba(0,0,0,0.5)' }}
           }
         }
@@ -1191,9 +1277,9 @@ function initMariners() {
       scales:{
         x:  mkScale(),
         y:  mkScale({ min:0, max:25000, position:'left',
-          title:{ display:true, text:'Mariners stranded', color:'#6B6B6B', font:{ size:10 }}}),
+          title:{ display:true, text:'Mariners stranded', color:'#1A1A1A', font:{ size:12 }}}),
         y1: mkScale({ min:0, max:2200,  position:'right',
-          title:{ display:true, text:'Vessels stranded', color:'#6B6B6B', font:{ size:10 }},
+          title:{ display:true, text:'Vessels stranded', color:'#1A1A1A', font:{ size:12 }},
           grid:{ drawOnChartArea:false }})
       }
     }
@@ -1218,10 +1304,10 @@ function initMarinersSb() {
       responsive:true, maintainAspectRatio:false,
       plugins:{
         tooltip:{ ...TIP },
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:12, font:{ size:9 }}}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:12, font:{ size:11 }}}
       },
       scales:{
-        x:  mkScale({ ticks:{ font:{ size:8 }, maxRotation:30 }}),
+        x:  mkScale({ ticks:{ font:{ size:10 }, maxRotation:30 }}),
         y:  mkScale({ min:0, max:25000 }),
         y1: mkScale({ min:0, max:2200, position:'right', grid:{ drawOnChartArea:false }})
       }
@@ -1255,12 +1341,12 @@ function initCADWidening() {
           label:  c => ` ${c.dataset.label}: ${c.parsed.x.toFixed(1)}% of GDP`,
           footer: c => `Rating: ${D[c[0].dataIndex].rating} | Source: ${D[c[0].dataIndex].source}`
         }},
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:14 }}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:14 }}
       },
       scales:{
         x: mkScale({ min:-8, max:0.5,
-          title:{ display:true, text:'% of GDP', color:'#6B6B6B', font:{ size:10 }}}),
-        y: mkScale({ ticks:{ font:{ size:10 }}})
+          title:{ display:true, text:'% of GDP', color:'#1A1A1A', font:{ size:12 }}}),
+        y: mkScale({ ticks:{ font:{ size:12 }}})
       }
     }
   });
@@ -1291,12 +1377,12 @@ function initEMBI() {
           label:  c => ` ${c.dataset.label}: ${c.parsed.y} bps`,
           footer: c => `Rating: ${D[c[0].dataIndex].rating}`
         }},
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:14 }}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:14 }}
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:40, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:40, font:{ size:11 }}}),
         y: mkScale({ min:0,
-          title:{ display:true, text:'Basis points (bps)', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'Basis points (bps)', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1330,9 +1416,9 @@ function initStateBars() {
         legend:{ display:false }
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:45, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:45, font:{ size:11 }}}),
         y: mkScale({ min:0, max:24,
-          title:{ display:true, text:'% of total', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'% of total', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1366,12 +1452,12 @@ function initRemittancesTrend() {
           label:  c => ` ${c.dataset.label}: $${c.parsed.y.toFixed(1)}B`,
           footer: c => D[c[0].dataIndex]?.note || ''
         }},
-        legend:{ labels:{ color:'#6B6B6B', boxWidth:20 }}
+        legend:{ labels:{ color:'#1A1A1A', boxWidth:20 }}
       },
       scales:{
-        x: mkScale({ ticks:{ maxRotation:40, font:{ size:9 }}}),
+        x: mkScale({ ticks:{ maxRotation:40, font:{ size:11 }}}),
         y: mkScale({ min:0, max:145,
-          title:{ display:true, text:'USD Billion', color:'#6B6B6B', font:{ size:10 }}
+          title:{ display:true, text:'USD Billion', color:'#1A1A1A', font:{ size:12 }}
         })
       }
     }
@@ -1398,7 +1484,7 @@ function buildGeoTable() {
     tr.innerHTML =
       `<td class="country-cell">${row.country}</td>` +
       `<td><span class="role-badge">${row.role}</span></td>` +
-      `<td style="max-width:420px;font-size:12px;color:#6B6B6B;line-height:1.5">${row.cost}</td>` +
+      `<td style="max-width:420px;font-size:12px;color:#1A1A1A;line-height:1.5">${row.cost}</td>` +
       `<td><span class="net-badge ${cls}">${row.net}</span></td>`;
     tbody.appendChild(tr);
   });
@@ -1428,6 +1514,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProgressBar();
   buildPhaseLegend();
   initStickyLegend();
+  initTocNav();
   initSectionNav();
 
   /* Keep sticky offsets + map sizing correct across resize/orientation */
