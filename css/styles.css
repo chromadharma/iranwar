@@ -482,34 +482,56 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .pull-quote {
-  margin: 24px 0;
-  padding: 10px 16px;
-  border-top: none;
-  border-bottom: none;
-  border-left: 3px solid var(--crisis);
+  position: relative;
+  margin: 40px 0;
+  padding: 28px 32px 26px 40px;
+  border-left: 4px solid var(--crisis);
   background: var(--inset);
-  border-radius: 0 2px 2px 0;
+  border-radius: 0 3px 3px 0;
+  overflow: hidden;
+}
+
+.pull-quote::before {
+  content: "\201C";
+  position: absolute;
+  top: -18px;
+  left: 8px;
+  font-family: var(--font-display);
+  font-size: 110px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--crisis);
+  opacity: 0.16;
+  pointer-events: none;
 }
 
 .pull-quote p {
-  font-family: var(--font-sans);
+  position: relative;
+  font-family: var(--font-display);
   font-style: italic;
   font-weight: 500;
-  font-size: 16.5px;
-  line-height: 1.5;
+  font-size: 27px;
+  line-height: 1.38;
   color: var(--ink);
-  margin: 0 0 4px;
+  margin: 0 0 12px;
 }
 
 .pull-quote cite {
+  position: relative;
   display: block;
   font-family: var(--font-sans);
   font-style: normal;
   font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--crisis);
+}
+
+@media (max-width: 600px) {
+  .pull-quote { padding: 24px 20px 22px 28px; }
+  .pull-quote p { font-size: 22px; }
+  .pull-quote::before { font-size: 84px; top: -14px; left: 4px; }
 }
 
 /* ─── TOC NAV (ever-present table of contents, fixed under main nav) ─── */
@@ -851,6 +873,14 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .step-metric-chip strong { color: var(--crisis); font-weight: 600; }
+
+.step-metric-chip.is-note {
+  background: var(--crisis-tint);
+  border: 1px solid var(--crisis);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--crisis-deep);
+}
 
 .step-source {
   font-family: var(--font-sans);
