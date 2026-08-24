@@ -474,7 +474,9 @@ function initScrollMap() {
       `<div class="map-popup-body">${ev.body}</div>` +
       `<div class="map-popup-source">${ev.source}</div>`,
       { maxWidth:280 }
-    ).addTo(scrollMap);
+    ).on('mouseover', function () { this.openPopup(); })
+     .on('mouseout',  function () { this.closePopup(); })
+     .addTo(scrollMap);
     scrollMkrs[ev.id] = { m, color };
   });
 }
@@ -645,7 +647,7 @@ function initSandboxMap() {
     subdomains:'abcd', maxZoom:14
   }).addTo(sandboxMap);
 
-  /* All strike markers — always visible, always clickable */
+  /* All strike markers — always visible, hover (or tap) to see the event */
   (crisisData.mapEvents || []).forEach(ev => {
     const color = PC[ev.phase] || V.v3;
     L.circleMarker([ev.lat, ev.lng], {
@@ -656,7 +658,9 @@ function initSandboxMap() {
       `<div class="map-popup-title">${ev.title}</div>` +
       `<div class="map-popup-body">${ev.body}</div>`,
       { maxWidth:260 }
-    ).addTo(sandboxMap);
+    ).on('mouseover', function () { this.openPopup(); })
+     .on('mouseout',  function () { this.closePopup(); })
+     .addTo(sandboxMap);
   });
 
   /* Hormuz status indicator */
