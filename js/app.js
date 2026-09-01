@@ -105,9 +105,14 @@ function isDark() {
   return document.documentElement.getAttribute('data-theme') === 'dark';
 }
 
+/* CARTO now requires a (free) API key on raster basemap requests — see
+   https://carto.com/basemaps/apikey. Without it, tiles render with an
+   "API key required" watermark instead of the actual map. */
+const CARTO_API_KEY = 'cb1_2p33_1_4732908ea6b9cf51843f7e8a';
+
 function tileURL() {
   const style = isDark() ? 'dark_all' : 'light_all';
-  return `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`;
+  return `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`;
 }
 
 /* Re-theme every Chart.js instance for the current mode */
@@ -465,7 +470,7 @@ function initScrollMap() {
   (crisisData.mapEvents || []).forEach(ev => {
     const color = PC[ev.phase] || V.v3;
     const m = L.circleMarker([ev.lat, ev.lng], {
-      radius:5, fillColor:color,
+      radius:7, fillColor:color,
       color:'rgba(26,26,26,0.35)', weight:1,
       fillOpacity:0.75, opacity:1
     }).bindPopup(
@@ -651,7 +656,7 @@ function initSandboxMap() {
   (crisisData.mapEvents || []).forEach(ev => {
     const color = PC[ev.phase] || V.v3;
     L.circleMarker([ev.lat, ev.lng], {
-      radius:5, fillColor:color,
+      radius:7, fillColor:color,
       color:'rgba(26,26,26,0.25)', weight:1, fillOpacity:0.7
     }).bindPopup(
       `<div class="map-popup-date">${ev.date} · ${(ev.phase||'').toUpperCase()}</div>` +
