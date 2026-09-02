@@ -683,7 +683,7 @@ function initSandboxMap() {
   if (!el || typeof L === 'undefined') return;
 
   sandboxMap = L.map('sandbox-map-container', {
-    center:[27, 53], zoom:5,
+    center:[27, 53], zoom:4,
     zoomControl:true, scrollWheelZoom:false
   });
 
@@ -1586,6 +1586,77 @@ window.addEventListener('resize', () => {
 }, { passive:true });
 
 /* ═══════════════════════════════════════════════════════════════
+   SMOOTH WHEEL SCROLL
+   CSS scroll-behavior:smooth only smooths *programmatic* scrolls (anchor
+   clicks, scrollTo calls) — it has no effect on native mouse-wheel input,
+   which arrives in large discrete jumps on a hardware wheel. For a
+   scrollytelling page that's the whole ballgame: a jump big enough can
+   leap clean over a step's IntersectionObserver detection window,
+   skipping it entirely, no matter how correct the step-selection logic
+   is. This intercepts wheel input and replaces the native jump with a
+   smoothly-interpolated scroll to the same destination, so every
+   intermediate position actually gets rendered. */
+function initSmoothWheelScroll() {
+  if (prefersReducedMotion()) return;               // respect the user's OS/browser setting
+  if (!window.matchMedia('(pointer: fine)').matches) return; // touch devices already scroll smoothly natively
+
+  let targetY  = window.scrollY;
+  let currentY = window.scrollY;
+  let rafId    = null;
+  const EASE   = 0.14; // higher = snappier catch-up, lower = floatier
+
+  function maxScroll() {
+    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  }
+
+  function normalizeDelta(e) {
+    // deltaMode: 0 = pixels (most wheels/trackpads), 1 = lines, 2 = pages
+    if (e.deltaMode === 1) return e.deltaY * 16;
+    if (e.deltaMode === 2) return e.deltaY * window.innerHeight;
+    return e.deltaY;
+  }
+
+  function step() {
+    currentY += (targetY - currentY) * EASE;
+    if (Math.abs(targetY - currentY) < 0.5) {
+      currentY = targetY;
+      window.scrollTo(0, currentY);
+      rafId = null;
+      return;
+    }
+    window.scrollTo(0, currentY);
+    rafId = requestAnimationFrame(step);
+  }
+
+  function onWheel(e) {
+    // Let native scrolling happen inside nested horizontally-scrolling
+    // strips (the TOC bar, the phase legend on narrow screens) rather
+    // than hijacking it into a vertical page scroll.
+    if (e.target?.closest?.('#toc-nav, #phase-legend')) return;
+    if (_navScrollLock) return; // an arrow-nav / pill-click scroll is already animating — don't fight it
+    if (e.ctrlKey) return;      // pinch-zoom gesture on some trackpads — never intercept
+
+    e.preventDefault();
+    targetY = Math.min(Math.max(targetY + normalizeDelta(e), 0), maxScroll());
+    if (!rafId) rafId = requestAnimationFrame(step);
+  }
+
+  window.addEventListener('wheel', onWheel, { passive:false });
+
+  /* If something else moves the page (an anchor click's native smooth
+     scroll, arrow-nav, browser back/forward) while our loop is idle,
+     keep target/current in sync so the next wheel tick picks up from
+     the real position instead of snapping back to a stale target. */
+  window.addEventListener('scroll', () => {
+    if (!rafId) { targetY = window.scrollY; currentY = window.scrollY; }
+  }, { passive:true });
+
+  window.addEventListener('resize', () => {
+    targetY = Math.min(targetY, maxScroll());
+  }, { passive:true });
+}
+
+/* ═══════════════════════════════════════════════════════════════
    MAIN INIT
 ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1597,6 +1668,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStickyLegend();
   initTocNav();
   initSectionNav();
+  initSmoothWheelScroll();
 
   /* Keep sticky offsets + map sizing correct across resize/orientation */
   let rT;
