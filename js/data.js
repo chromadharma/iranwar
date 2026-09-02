@@ -1026,7 +1026,9 @@ window.crisisData = {
      SECTION 16: SCROLL STEPS
      Narrative steps for the sticky-map scrollytelling section.
      Pattern: Side-by-side sticky (NYT/Pudding style).
-     Each step triggers map.flyTo() and marker highlight.
+     Each step triggers a marker highlight. The map itself no longer
+     auto-flies to flyTo/zoom (removed — felt unsettling); those two
+     fields are kept in the data but unused, harmless if left as-is.
   ───────────────────────────────────────────────────────────────── */
   scrollSteps: [
     { step:1,  eventId:"tehran-compound", flyTo:[32,46],            zoom:5, phase:"outbreak",

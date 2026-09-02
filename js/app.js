@@ -459,7 +459,7 @@ function initScrollMap() {
   scrollMap = L.map('scroll-map-container', {
     center:[27, 50], zoom:5,
     zoomControl:false, scrollWheelZoom:false,
-    dragging:false, touchZoom:false, doubleClickZoom:false, keyboard:false
+    dragging:true, touchZoom:false, doubleClickZoom:false, keyboard:false
   });
 
   scrollTileLayer = L.tileLayer(tileURL(), {
@@ -467,6 +467,7 @@ function initScrollMap() {
     subdomains:'abcd', maxZoom:14
   }).addTo(scrollMap);
 
+  let scrollPopupCloseT = null;
   (crisisData.mapEvents || []).forEach(ev => {
     const color = PC[ev.phase] || V.v3;
     const m = L.circleMarker([ev.lat, ev.lng], {
@@ -479,8 +480,18 @@ function initScrollMap() {
       `<div class="map-popup-body">${ev.body}</div>` +
       `<div class="map-popup-source">${ev.source}</div>`,
       { maxWidth:280 }
-    ).on('mouseover', function () { this.openPopup(); })
-     .on('mouseout',  function () { this.closePopup(); })
+    ).on('mouseover', function () {
+      /* Without this, moving quickly from one marker to another could
+         leave both popups open at once, stacking on top of each other. */
+      clearTimeout(scrollPopupCloseT);
+      scrollMap.closePopup();
+      this.openPopup();
+    }).on('mouseout', function () {
+      /* Small delay so passing between two close-together markers doesn't
+         flicker the popup closed and immediately back open. */
+      clearTimeout(scrollPopupCloseT);
+      scrollPopupCloseT = setTimeout(() => scrollMap.closePopup(), 100);
+    })
      .addTo(scrollMap);
     scrollMkrs[ev.id] = { m, color };
   });
@@ -492,7 +503,7 @@ function activateMapStep(step) {
   /* Reset previous */
   if (prevActiveId && scrollMkrs[prevActiveId]) {
     const p = scrollMkrs[prevActiveId];
-    p.m.setRadius(5);
+    p.m.setRadius(7);
     p.m.setStyle({ fillOpacity:0.75, weight:1, color:'rgba(26,26,26,0.35)' });
   }
 
@@ -505,10 +516,11 @@ function activateMapStep(step) {
     prevActiveId = ev.id;
   }
 
-  /* Fly */
-  if (step.flyTo && scrollMap) {
-    scrollMap.flyTo(step.flyTo, step.zoom || 6, { animate:true, duration:1.1 });
-  }
+  /* The map used to fly/zoom to each step's location automatically as the
+     reader scrolled — removed per feedback that the auto-motion felt
+     unsettling. The map now stays exactly where the reader (or the
+     default view) leaves it; only the active marker changes. Dragging is
+     still enabled so readers can explore manually. */
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -667,6 +679,7 @@ function initSandboxMap() {
   }).addTo(sandboxMap);
 
   /* All strike markers — always visible, hover (or tap) to see the event */
+  let sandboxPopupCloseT = null;
   (crisisData.mapEvents || []).forEach(ev => {
     const color = PC[ev.phase] || V.v3;
     L.circleMarker([ev.lat, ev.lng], {
@@ -677,8 +690,14 @@ function initSandboxMap() {
       `<div class="map-popup-title">${ev.title}</div>` +
       `<div class="map-popup-body">${ev.body}</div>`,
       { maxWidth:260 }
-    ).on('mouseover', function () { this.openPopup(); })
-     .on('mouseout',  function () { this.closePopup(); })
+    ).on('mouseover', function () {
+      clearTimeout(sandboxPopupCloseT);
+      sandboxMap.closePopup();
+      this.openPopup();
+    }).on('mouseout', function () {
+      clearTimeout(sandboxPopupCloseT);
+      sandboxPopupCloseT = setTimeout(() => sandboxMap.closePopup(), 100);
+    })
      .addTo(sandboxMap);
   });
 
