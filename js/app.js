@@ -547,6 +547,7 @@ function buildScrollSteps() {
 /* Exposed so the section-nav can activate the exact step it jumps to */
 let setActiveStep = null;
 let _scrollyObserver = null;
+let _activeStepIdx = null;
 
 /* When the arrows or a phase pill drive a programmatic scroll we freeze the
    observer and pin the destination step as active. Otherwise "last intersecting
@@ -605,6 +606,10 @@ function initScrollytelling() {
 
   setActiveStep = target => {
     const idx  = +target.dataset.idx;
+    if (idx === _activeStepIdx) return; /* already active — skip re-running
+      the highlight + map flyTo, which was restarting mid-animation and
+      reading as jitter/an unwanted autoscroll */
+    _activeStepIdx = idx;
     const step = (crisisData.scrollSteps || [])[idx];
     if (!step) return;
     steps.forEach(s => s.classList.remove('is-active'));
@@ -621,7 +626,16 @@ function initScrollytelling() {
     if (_scrollyObserver) _scrollyObserver.disconnect();
     _scrollyObserver = new IntersectionObserver(entries => {
       if (_navScrollLock) return;   // arrow nav in flight — highlight is set explicitly
-      entries.forEach(entry => { if (entry.isIntersecting) setActiveStep(entry.target); });
+      const visible = entries.filter(e => e.isIntersecting);
+      if (!visible.length) return;
+      /* The reading band is intentionally tall (see scrollyRootMargin), so
+         more than one step can be inside it at once near a transition.
+         Resolve to a single, deterministic "current" step per batch —
+         the furthest one down the page — instead of firing setActiveStep
+         once per intersecting entry, which could call it twice in one
+         batch and restart the map's flyTo animation on top of itself. */
+      visible.sort((a, b) => (+a.target.dataset.idx) - (+b.target.dataset.idx));
+      setActiveStep(visible[visible.length - 1].target);
     }, { threshold: 0, rootMargin: scrollyRootMargin() });
     steps.forEach(s => _scrollyObserver.observe(s));
   };
