@@ -469,7 +469,10 @@ function initScrollMap() {
 
   let scrollPopupCloseT = null;
   (crisisData.mapEvents || []).forEach(ev => {
-    const color = PC[ev.phase] || V.v3;
+    /* One uniform color for every event dot — a per-phase color implies a
+       meaning/category the dot doesn't actually carry; the phase is
+       already stated in the popup text and the phase-legend above. */
+    const color = '#7A1010';
     const m = L.circleMarker([ev.lat, ev.lng], {
       radius:7, fillColor:color,
       color:'rgba(26,26,26,0.35)', weight:1,
@@ -479,7 +482,7 @@ function initScrollMap() {
       `<div class="map-popup-title">${ev.title}</div>` +
       `<div class="map-popup-body">${ev.body}</div>` +
       `<div class="map-popup-source">${ev.source}</div>`,
-      { maxWidth:280 }
+      { maxWidth:280, autoPan:false }
     ).on('mouseover', function () {
       /* Without this, moving quickly from one marker to another could
          leave both popups open at once, stacking on top of each other. */
@@ -516,11 +519,13 @@ function activateMapStep(step) {
     prevActiveId = ev.id;
   }
 
-  /* The map used to fly/zoom to each step's location automatically as the
-     reader scrolled — removed per feedback that the auto-motion felt
-     unsettling. The map now stays exactly where the reader (or the
-     default view) leaves it; only the active marker changes. Dragging is
-     still enabled so readers can explore manually. */
+  /* Fly — scroll-driven only. Hovering a dot never calls this function
+     (hover just opens/closes that dot's own popup, and the popup itself
+     has autoPan:false), so this can't get triggered while the reader is
+     hovering other events near the currently active one. */
+  if (step.flyTo && scrollMap) {
+    scrollMap.flyTo(step.flyTo, step.zoom || 6, { animate:true, duration:1.1 });
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -634,6 +639,8 @@ function initScrollytelling() {
     if (oOman)     oOman.textContent     = `$${step.metric_oman}`;
   };
 
+  let _lastScrollY = window.scrollY;
+
   const build = () => {
     if (_scrollyObserver) _scrollyObserver.disconnect();
     _scrollyObserver = new IntersectionObserver(entries => {
@@ -643,11 +650,18 @@ function initScrollytelling() {
       /* The reading band is intentionally tall (see scrollyRootMargin), so
          more than one step can be inside it at once near a transition.
          Resolve to a single, deterministic "current" step per batch —
-         the furthest one down the page — instead of firing setActiveStep
-         once per intersecting entry, which could call it twice in one
-         batch and restart the map's flyTo animation on top of itself. */
+         the leading one in whichever direction the reader is actually
+         scrolling — instead of always picking the furthest-down step.
+         Always picking "furthest down" made scrolling back UP skip every
+         other step: crossing from step K to K-1, both briefly overlap,
+         and always taking the higher index kept K active until the
+         overlap with K-1 ended entirely, jumping straight to K-2. */
+      const scrollY = window.scrollY;
+      const scrollingDown = scrollY >= _lastScrollY;
+      _lastScrollY = scrollY;
       visible.sort((a, b) => (+a.target.dataset.idx) - (+b.target.dataset.idx));
-      setActiveStep(visible[visible.length - 1].target);
+      const target = scrollingDown ? visible[visible.length - 1] : visible[0];
+      setActiveStep(target.target);
     }, { threshold: 0, rootMargin: scrollyRootMargin() });
     steps.forEach(s => _scrollyObserver.observe(s));
   };
@@ -681,7 +695,7 @@ function initSandboxMap() {
   /* All strike markers — always visible, hover (or tap) to see the event */
   let sandboxPopupCloseT = null;
   (crisisData.mapEvents || []).forEach(ev => {
-    const color = PC[ev.phase] || V.v3;
+    const color = '#7A1010';
     L.circleMarker([ev.lat, ev.lng], {
       radius:7, fillColor:color,
       color:'rgba(26,26,26,0.25)', weight:1, fillOpacity:0.7
@@ -689,7 +703,7 @@ function initSandboxMap() {
       `<div class="map-popup-date">${ev.date} · ${(ev.phase||'').toUpperCase()}</div>` +
       `<div class="map-popup-title">${ev.title}</div>` +
       `<div class="map-popup-body">${ev.body}</div>`,
-      { maxWidth:260 }
+      { maxWidth:260, autoPan:false }
     ).on('mouseover', function () {
       clearTimeout(sandboxPopupCloseT);
       sandboxMap.closePopup();
@@ -701,18 +715,43 @@ function initSandboxMap() {
      .addTo(sandboxMap);
   });
 
-  /* Hormuz status indicator */
+  /* Hormuz status indicator — same interaction pattern as every other dot:
+     a popup on hover, not a bare tooltip, so every dot on the map behaves
+     identically. */
   hormuzMarker = L.circleMarker([26.34, 56.50], {
     radius:16, fillColor:V.v5,
     color:'#1A1A1A', weight:2, fillOpacity:0.85
-  }).bindTooltip('Strait of Hormuz', { permanent:false, direction:'top' })
+  }).bindPopup(
+    '<div class="map-popup-date">STRAIT STATUS</div>' +
+    '<div class="map-popup-title">Strait of Hormuz</div>' +
+    '<div class="map-popup-body">Open</div>',
+    { maxWidth:220, autoPan:false }
+  ).on('mouseover', function () {
+    clearTimeout(sandboxPopupCloseT);
+    sandboxMap.closePopup();
+    this.openPopup();
+  }).on('mouseout', function () {
+    clearTimeout(sandboxPopupCloseT);
+    sandboxPopupCloseT = setTimeout(() => sandboxMap.closePopup(), 100);
+  })
     .addTo(sandboxMap);
 }
+
+const HORMUZ_STATUS_LABEL = {
+  open:'Open — normal commercial transit', closed:'Closed to commercial traffic',
+  blockaded:'Under naval blockade', threatened:'Transit threatened, traffic thinning',
+  opening:'Reopening — traffic resuming'
+};
 
 function updateSandboxMap(status) {
   if (!hormuzMarker) return;
   const c = { open:V.v5, closed:V.v9, blockaded:V.v2, threatened:V.v7, opening:V.v6 };
   hormuzMarker.setStyle({ fillColor: c[status] || V.v5 });
+  hormuzMarker.setPopupContent(
+    '<div class="map-popup-date">STRAIT STATUS</div>' +
+    '<div class="map-popup-title">Strait of Hormuz</div>' +
+    `<div class="map-popup-body">${HORMUZ_STATUS_LABEL[status] || 'Open'}</div>`
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
